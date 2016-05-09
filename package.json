@@ -1,7 +1,7 @@
 {
-  "name": "isValidVersion",
+  "name": "assertValidVersion",
   "version": "1.0.0",
-  "main": "js/src/isValidVersion",
+  "main": "js/src/assertValidVersion",
   "dependencies": {
     "type-utils": "aleclarson/type-utils#1.0.0",
     "fetch": "aleclarson/fetch#1.0.0",
