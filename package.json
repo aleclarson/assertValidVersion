@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "main": "js/src/assertValidVersion",
   "dependencies": {
-    "type-utils": "aleclarson/type-utils#1.0.0",
-    "fetch": "aleclarson/fetch#1.0.0",
     "in-array": "aleclarson/in-array#1.0.0",
     "node-semver": "aleclarson/node-semver#5.1.0",
     "finder": "aleclarson/finder#1.0.0",
     "exec": "aleclarson/exec#1.0.0",
-    "q": "aleclarson/q#1.0.0"
+    "q": "aleclarson/q#1.0.0",
+    "isType": "aleclarson/isType#1.0.0",
+    "assertType": "aleclarson/assertType#1.0.0",
+    "log": "aleclarson/log#1.0.0",
+    "request": "~2.72.0"
   },
   "lotus": {
     "plugins": [

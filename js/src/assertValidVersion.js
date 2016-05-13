@@ -1,6 +1,6 @@
-var Finder, GITHUB_404, GITHUB_TAG, NPM_404, Q, SimpleError, assert, assertNpmVersionExists, assertRepoExists, assertType, exec, inArray, isType, log, ref, request, semver;
+var Finder, GITHUB_404, GITHUB_TAG, NPM_404, Q, SimpleError, assert, assertNpmVersionExists, assertRepoExists, assertType, exec, inArray, isType, log, request, semver;
 
-ref = require("type-utils"), isType = ref.isType, assert = ref.assert, assertType = ref.assertType;
+assertType = require("assertType");
 
 inArray = require("in-array");
 
@@ -9,6 +9,10 @@ request = require("request");
 semver = require("node-semver");
 
 Finder = require("finder");
+
+isType = require("isType");
+
+assert = require("assert");
 
 exec = require("exec");
 
@@ -31,18 +35,18 @@ NPM_404 = Finder({
 
 module.exports = function(depName, version) {
   return Q.promise(function(resolve, reject) {
-    var ref1, ref2, repoName, tagName, url, userName;
+    var ref, ref1, repoName, tagName, url, userName;
     assertType(depName, String);
     assertType(version, String);
     if (0 > version.indexOf("/")) {
       return resolve(assertNpmVersionExists(depName, version));
     }
-    ref1 = version.split("/"), userName = ref1[0], repoName = ref1[1];
+    ref = version.split("/"), userName = ref[0], repoName = ref[1];
     assert(userName.length, "Github username must exist!");
     assert(repoName.length, "Github repository must exist!");
     url = "https://github.com/" + userName + "/";
     if (0 <= repoName.indexOf("#")) {
-      ref2 = repoName.split("#"), repoName = ref2[0], tagName = ref2[1];
+      ref1 = repoName.split("#"), repoName = ref1[0], tagName = ref1[1];
       url += repoName + "/tags";
       return request(url, function(error, _, body) {
         var tagNames;

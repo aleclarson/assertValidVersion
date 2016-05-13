@@ -1,10 +1,11 @@
 
-{ isType, assert, assertType } = require "type-utils"
-
+assertType = require "assertType"
 inArray = require "in-array"
 request = require "request"
 semver = require "node-semver"
 Finder = require "finder"
+isType = require "isType"
+assert = require "assert"
 exec = require "exec"
 log = require "log"
 Q = require "q"
