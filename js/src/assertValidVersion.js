@@ -1,10 +1,10 @@
-var Finder, GITHUB_404, GITHUB_TAG, NPM_404, Q, SimpleError, assert, assertNpmVersionExists, assertRepoExists, assertType, exec, inArray, isType, log, request, semver;
+var Finder, GITHUB_404, GITHUB_TAG, NPM_404, Q, SimpleError, assert, assertNpmVersionExists, assertRepoExists, assertType, exec, fetch, inArray, isType, log, semver;
+
+fetch = require("fetch").fetch;
 
 assertType = require("assertType");
 
 inArray = require("in-array");
-
-request = require("request");
 
 semver = require("node-semver");
 
@@ -34,12 +34,12 @@ NPM_404 = Finder({
 });
 
 module.exports = function(depName, version) {
-  return Q.promise(function(resolve, reject) {
+  return Q["try"](function() {
     var ref, ref1, repoName, tagName, url, userName;
     assertType(depName, String);
     assertType(version, String);
     if (0 > version.indexOf("/")) {
-      return resolve(assertNpmVersionExists(depName, version));
+      return assertNpmVersionExists(depName, version);
     }
     ref = version.split("/"), userName = ref[0], repoName = ref[1];
     assert(userName.length, "Github username must exist!");
@@ -48,26 +48,27 @@ module.exports = function(depName, version) {
     if (0 <= repoName.indexOf("#")) {
       ref1 = repoName.split("#"), repoName = ref1[0], tagName = ref1[1];
       url += repoName + "/tags";
-      return request(url, function(error, _, body) {
-        var tagNames;
+      return fetch(url).then(function(res) {
+        var body, error, tagNames;
+        body = res._bodyText;
         error = assertRepoExists(body);
         if (error) {
-          return reject(error);
+          throw error;
         }
         tagNames = GITHUB_TAG.all(body);
         if (inArray(tagNames, tagName)) {
-          return resolve();
+          return;
         }
-        return reject(SimpleError("Version does not exist!"));
+        throw SimpleError("Version does not exist!");
       });
     }
     url += repoName;
-    return request(url, function(error, _, body) {
-      error = assertRepoExists(body);
+    return fetch(url).then(function(res) {
+      var error;
+      error = assertRepoExists(res._bodyText);
       if (error) {
-        return reject(error);
+        throw error;
       }
-      return resolve();
     });
   });
 };
@@ -111,5 +112,3 @@ assertRepoExists = function(body) {
   }
   return SimpleError("Github repository does not exist!");
 };
-
-//# sourceMappingURL=../../map/src/assertValidVersion.map

@@ -1,7 +1,8 @@
 
+{ fetch } = require "fetch"
+
 assertType = require "assertType"
 inArray = require "in-array"
-request = require "request"
 semver = require "node-semver"
 Finder = require "finder"
 isType = require "isType"
@@ -20,14 +21,14 @@ GITHUB_404 = Finder
 NPM_404 = Finder
   regex: "npm ERR! code E404"
 
-module.exports = (depName, version) -> Q.promise (resolve, reject) ->
+module.exports = (depName, version) -> Q.try ->
 
   assertType depName, String
   assertType version, String
 
   # Is an NPM package wanted?
   if 0 > version.indexOf "/"
-    return resolve assertNpmVersionExists depName, version
+    return assertNpmVersionExists depName, version
 
   # Nope, a Github repository is wanted.
   [ userName, repoName ] = version.split "/"
@@ -45,21 +46,25 @@ module.exports = (depName, version) -> Q.promise (resolve, reject) ->
     # Load the list of remote tags.
     url += repoName + "/tags"
 
-    return request url, (error, _, body) ->
+    return fetch url
+
+    .then (res) ->
+      body = res._bodyText
       error = assertRepoExists body
-      return reject error if error
+      throw error if error
       tagNames = GITHUB_TAG.all body
-      return resolve() if inArray tagNames, tagName
-      return reject SimpleError "Version does not exist!"
+      return if inArray tagNames, tagName
+      throw SimpleError "Version does not exist!"
 
   # The default branch is wanted.
   url += repoName
 
   # Try loading the Github repository's webpage.
-  return request url, (error, _, body) ->
-    error = assertRepoExists body
-    return reject error if error
-    return resolve()
+  return fetch url
+
+  .then (res) ->
+    error = assertRepoExists res._bodyText
+    throw error if error
 
 assertNpmVersionExists = (depName, version) ->
 
