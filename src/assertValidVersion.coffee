@@ -2,6 +2,7 @@
 { fetch } = require "fetch"
 
 assertType = require "assertType"
+Promise = require "Promise"
 inArray = require "in-array"
 semver = require "node-semver"
 Finder = require "finder"
@@ -9,7 +10,6 @@ isType = require "isType"
 assert = require "assert"
 exec = require "exec"
 log = require "log"
-Q = require "q"
 
 GITHUB_TAG = Finder
   regex: "<span class=\"tag-name\">([^\<]+)<\/span>"
@@ -21,7 +21,7 @@ GITHUB_404 = Finder
 NPM_404 = Finder
   regex: "npm ERR! code E404"
 
-module.exports = (depName, version) -> Q.try ->
+module.exports = Promise.wrap (depName, version) ->
 
   assertType depName, String
   assertType version, String

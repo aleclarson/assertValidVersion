@@ -1,8 +1,10 @@
-var Finder, GITHUB_404, GITHUB_TAG, NPM_404, Q, SimpleError, assert, assertNpmVersionExists, assertRepoExists, assertType, exec, fetch, inArray, isType, log, semver;
+var Finder, GITHUB_404, GITHUB_TAG, NPM_404, Promise, SimpleError, assert, assertNpmVersionExists, assertRepoExists, assertType, exec, fetch, inArray, isType, log, semver;
 
 fetch = require("fetch").fetch;
 
 assertType = require("assertType");
+
+Promise = require("Promise");
 
 inArray = require("in-array");
 
@@ -18,8 +20,6 @@ exec = require("exec");
 
 log = require("log");
 
-Q = require("q");
-
 GITHUB_TAG = Finder({
   regex: "<span class=\"tag-name\">([^\<]+)<\/span>",
   group: 1
@@ -33,45 +33,43 @@ NPM_404 = Finder({
   regex: "npm ERR! code E404"
 });
 
-module.exports = function(depName, version) {
-  return Q["try"](function() {
-    var ref, ref1, repoName, tagName, url, userName;
-    assertType(depName, String);
-    assertType(version, String);
-    if (0 > version.indexOf("/")) {
-      return assertNpmVersionExists(depName, version);
-    }
-    ref = version.split("/"), userName = ref[0], repoName = ref[1];
-    assert(userName.length, "Github username must exist!");
-    assert(repoName.length, "Github repository must exist!");
-    url = "https://github.com/" + userName + "/";
-    if (0 <= repoName.indexOf("#")) {
-      ref1 = repoName.split("#"), repoName = ref1[0], tagName = ref1[1];
-      url += repoName + "/tags";
-      return fetch(url).then(function(res) {
-        var body, error, tagNames;
-        body = res._bodyText;
-        error = assertRepoExists(body);
-        if (error) {
-          throw error;
-        }
-        tagNames = GITHUB_TAG.all(body);
-        if (inArray(tagNames, tagName)) {
-          return;
-        }
-        throw SimpleError("Version does not exist!");
-      });
-    }
-    url += repoName;
+module.exports = Promise.wrap(function(depName, version) {
+  var ref, ref1, repoName, tagName, url, userName;
+  assertType(depName, String);
+  assertType(version, String);
+  if (0 > version.indexOf("/")) {
+    return assertNpmVersionExists(depName, version);
+  }
+  ref = version.split("/"), userName = ref[0], repoName = ref[1];
+  assert(userName.length, "Github username must exist!");
+  assert(repoName.length, "Github repository must exist!");
+  url = "https://github.com/" + userName + "/";
+  if (0 <= repoName.indexOf("#")) {
+    ref1 = repoName.split("#"), repoName = ref1[0], tagName = ref1[1];
+    url += repoName + "/tags";
     return fetch(url).then(function(res) {
-      var error;
-      error = assertRepoExists(res._bodyText);
+      var body, error, tagNames;
+      body = res._bodyText;
+      error = assertRepoExists(body);
       if (error) {
         throw error;
       }
+      tagNames = GITHUB_TAG.all(body);
+      if (inArray(tagNames, tagName)) {
+        return;
+      }
+      throw SimpleError("Version does not exist!");
     });
+  }
+  url += repoName;
+  return fetch(url).then(function(res) {
+    var error;
+    error = assertRepoExists(res._bodyText);
+    if (error) {
+      throw error;
+    }
   });
-};
+});
 
 assertNpmVersionExists = function(depName, version) {
   return exec("npm view " + depName + " --json").fail(function(error) {
@@ -112,3 +110,5 @@ assertRepoExists = function(body) {
   }
   return SimpleError("Github repository does not exist!");
 };
+
+//# sourceMappingURL=../../map/src/assertValidVersion.map
