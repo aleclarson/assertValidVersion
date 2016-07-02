@@ -68,7 +68,7 @@ module.exports = Promise.wrap (depName, version) ->
 
 assertNpmVersionExists = (depName, version) ->
 
-  exec "npm view #{depName} --json"
+  exec.async "npm view #{depName} --json"
 
   .fail (error) ->
 

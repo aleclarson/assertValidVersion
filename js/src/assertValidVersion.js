@@ -72,7 +72,7 @@ module.exports = Promise.wrap(function(depName, version) {
 });
 
 assertNpmVersionExists = function(depName, version) {
-  return exec("npm view " + depName + " --json").fail(function(error) {
+  return exec.async("npm view " + depName + " --json").fail(function(error) {
     if (NPM_404.test(error.message)) {
       throw SimpleError("Package does not exist in NPM registry!");
     }
