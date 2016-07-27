@@ -8,7 +8,7 @@
     "assertType": "aleclarson/assertType#1.0.0",
     "exec": "aleclarson/exec#1.0.0",
     "fetch": "aleclarson/fetch#1.0.0",
-    "finder": "aleclarson/finder#1.0.0",
+    "finder": "aleclarson/finder#2.0.1",
     "in-array": "aleclarson/in-array#1.0.0",
     "isType": "aleclarson/isType#1.0.0",
     "log": "aleclarson/log#1.0.0",
