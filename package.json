@@ -5,7 +5,7 @@
   "dependencies": {
     "Promise": "aleclarson/Promise#1.0.0",
     "assert": "aleclarson/assert#1.0.0",
-    "assertType": "aleclarson/assertType#1.0.0",
+    "assertType": "aleclarson/assertType#2.0.0",
     "exec": "aleclarson/exec#1.0.0",
     "fetch": "aleclarson/fetch#1.0.0",
     "finder": "aleclarson/finder#2.0.1",
