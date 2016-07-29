@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "assertValidVersion.js",
+  "sourceRoot": "../../spec",
+  "sources": [
+    "assertValidVersion.coffee"
+  ],
+  "names": [],
+  "mappings": ""
+}
