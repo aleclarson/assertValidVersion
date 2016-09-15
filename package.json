@@ -1,9 +1,16 @@
 {
   "name": "assertValidVersion",
   "version": "1.0.0",
-  "main": "js/src/assertValidVersion",
+  "main": "js/assertValidVersion",
+  "plugins": [
+    "lotus-coffee"
+  ],
+  "scripts": {
+    "build": "coffee -cb -o js src",
+    "postinstall": "postinstall-build js 'npm run build'"
+  },
   "dependencies": {
-    "Promise": "aleclarson/Promise#1.0.0",
+    "Promise": "aleclarson/Promise#2.0.0",
     "assert": "aleclarson/assert#1.0.0",
     "assertType": "aleclarson/assertType#2.0.0",
     "exec": "aleclarson/exec#1.0.0",
@@ -11,12 +18,11 @@
     "finder": "aleclarson/finder#2.0.1",
     "in-array": "aleclarson/in-array#1.0.0",
     "isType": "aleclarson/isType#1.0.0",
-    "log": "aleclarson/log#1.0.0",
-    "node-semver": "aleclarson/node-semver#5.1.0"
+    "log": "aleclarson/log#2.0.0",
+    "node-semver": "aleclarson/node-semver#5.1.0",
+    "postinstall-build": "0.2.x"
   },
-  "lotus": {
-    "plugins": [
-      "lotus-coffee"
-    ]
+  "devDependencies": {
+    "coffee-script": "1.9.x"
   }
 }
